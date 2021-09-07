@@ -36,7 +36,7 @@ func recoverAssignTo(rv reflect.Value, jv js.Value) (err error) {
 
 // assignTo recursively assigns a value.
 func assignTo(rv reflect.Value, jv js.Value) (reflect.Value, error) {
-	if jv == js.Null() || jv == js.Undefined() {
+	if jv.Equal(js.Null()) || jv.Equal(js.Undefined()) {
 		return zero, nil
 	}
 
