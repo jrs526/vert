@@ -1,3 +1,4 @@
+//go:build js && wasm
 // +build js,wasm
 
 // Package vert provides WebAssembly interop between Go and JS values.
@@ -14,24 +15,14 @@ var (
 	array  = js.Global().Get("Array")
 )
 
-// Value is an assignable JS value.
-type Value struct {
-	js.Value
-}
-
-// JSValue returns the JS value.
-func (v Value) JSValue() js.Value {
-	return v.Value
-}
-
 // ValueOf returns the Go value as a new value.
-func ValueOf(i interface{}) Value {
+func ValueOf(i interface{}) js.Value {
 	switch i.(type) {
-	case nil, js.Value, js.Wrapper:
-		return Value{Value: js.ValueOf(i)}
+	case nil, js.Value:
+		return js.ValueOf(i)
 	default:
 		v := reflect.ValueOf(i)
-		return Value{Value: valueOf(v)}
+		return valueOf(v)
 	}
 }
 

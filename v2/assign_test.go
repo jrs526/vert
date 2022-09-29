@@ -1,3 +1,4 @@
+//go:build js && wasm
 // +build js,wasm
 
 package vert
@@ -12,7 +13,7 @@ import (
 func TestAssignToAll(t *testing.T) {
 	v := ValueOf(allValue)
 	ac := All{}
-	err := v.AssignTo(&ac)
+	err := AssignTo(v, &ac)
 	if err != nil {
 		t.Errorf("unexpected error: %+v\n", err)
 	}
@@ -24,7 +25,7 @@ func TestAssignToAll(t *testing.T) {
 func TestAssignToAllPointers(t *testing.T) {
 	v := ValueOf(pallValue)
 	ac := All{}
-	err := v.AssignTo(&ac)
+	err := AssignTo(v, &ac)
 	if err != nil {
 		t.Errorf("unexpected error: %+v\n", err)
 	}
@@ -46,7 +47,7 @@ func TestAssignToAllFields(t *testing.T) {
 				ac := acAll.Field(i).Interface()
 
 				v := ValueOf(ex)
-				err := v.AssignTo(&ac)
+				err := AssignTo(v, &ac)
 				if err != nil {
 					t.Errorf("unexpected error: %+v\n", err)
 				}
@@ -72,7 +73,7 @@ func TestAssignToAllPointerFields(t *testing.T) {
 				ac := acAll.Field(i).Interface()
 
 				v := ValueOf(ex)
-				err := v.AssignTo(&ac)
+				err := AssignTo(v, &ac)
 				if err != nil {
 					t.Errorf("unexpected error: %+v\n", err)
 				}
@@ -255,7 +256,7 @@ func TestInvalidAssignmentJsToGoError(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			v := ValueOf(test.v)
 
-			err := v.AssignTo(&test.i)
+			err := AssignTo(v, &test.i)
 
 			if !reflect.DeepEqual(test.err, err) {
 				t.Errorf("expected: %+v but found: %+v\n", test.err, err)
@@ -284,9 +285,9 @@ func TestInvalidAssignmentNonNilPointerError(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			v := &Value{}
+			v := js.Value{}
 
-			err := v.AssignTo(test.i)
+			err := AssignTo(v, test.i)
 
 			if !reflect.DeepEqual(test.err, err) {
 				t.Errorf("expected: %+v but found: %+v\n", test.err, err)

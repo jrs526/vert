@@ -1,12 +1,13 @@
 # vert
-[![GoDoc](https://godoc.org/github.com/norunners/vert?status.svg)](https://godoc.org/github.com/norunners/vert)
-[![Build Status](https://travis-ci.org/norunners/vert.svg?branch=master)](https://travis-ci.org/norunners/vert)
-
 Package `vert` provides WebAssembly interop between Go and JS values.
+
+## Differences from norunners/vert
+- removed vert.Value type so that the package is compatible with go1.18 (js.Wrapper was removed)
+- changed signature of func(vert.Value) AssignTo(any) to func AssignTo(js.Value, any)
 
 ## Install
 ```bash
-GOOS=js GOARCH=wasm go get github.com/norunners/vert
+GOOS=js GOARCH=wasm go get github.com/jrs526/vert
 ```
 
 ## Examples
@@ -15,14 +16,14 @@ Below is a trivial string value interop.
 ```go
 package main
 
-import "github.com/norunners/vert"
+import "github.com/jrs526/vert/v2"
 
 func main() {
 	v := vert.ValueOf("Hello World!")
 	// Use v as a JS value.
 
 	s := ""
-	v.AssignTo(&s)
+	vert.AssignTo(v, &s)
 	// Use s as a Go value.
 }
 ```
@@ -32,7 +33,7 @@ Go structs and JS objects interop seamlessly.
 ```go
 package main
 
-import "github.com/norunners/vert"
+import "github.com/jrs526/vert/v2"
 
 type Data struct {
 	Message string
@@ -45,7 +46,7 @@ func main() {
 	// e.g. {"Message": "Hello World!"}
 
 	d := &Data{}
-	v.AssignTo(d)
+	vert.AssignTo(v, d)
 }
 ```
 
@@ -54,7 +55,7 @@ Tagged struct fields allow defined JS field names.
 ```go
 package main
 
-import "github.com/norunners/vert"
+import "github.com/jrs526/vert/v2"
 
 type Data struct {
 	Message string `js:"msg"`
@@ -68,7 +69,7 @@ func main() {
 	// e.g. {"msg": "Hello World!"}
 
 	d := &Data{}
-	v.AssignTo(d)
+	vert.AssignTo(v, d)
 }
 ```
 
@@ -77,7 +78,7 @@ func main() {
 ```go
 package main
 
-import "github.com/norunners/vert"
+import "github.com/jrs526/vert/v2"
 
 type Data struct {
 	Message string
@@ -87,7 +88,7 @@ func main() {
 	v := vert.ValueOf("Hello World!")
 
 	d := &Data{}
-	if err := v.AssignTo(d); err != nil {
+	if err := vert.AssignTo(v, d); err != nil {
 		// Handle error.
 	}
 }
